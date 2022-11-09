@@ -1,4 +1,5 @@
-﻿#include <iostream>
+
+#include <iostream>
 #include <Windows.h>
 #include <stdlib.h>
 
@@ -7,24 +8,8 @@ using namespace std;
 // Два поля
 char fieldMy[10][10];
 char fieldComp[10][10];
-
-
-//												МОРСКОЙ БОЙ!
-
-//1)поля
-                        //0|1|2|3|4|5|6|7|8|9|10
-                        //1| | | | | | | | | | |
-                        //2| | | | | | | | | | |
-                        //3| | | | | | | | | | |
-                        //4| | | | | | | | | | |
-                        //5| | |-|X| | | | | | |
-                        //6| | | | | | | | | | |
-                        //7| | | | | | | | | | |
-                        //8| |$| | | | | | | | |
-                        //9| |$| | | | | | | | |
-                       //10| |$| | | | | | | | |
-//1.1)мое поле
-
+int my = 0;
+int comp = 0;
 
 //
 void FieldFill();//начальная отрисовка поля
@@ -50,8 +35,7 @@ void WinCheck(char(*field)[10], string name);//проверка победы
 int a; //рандомные выстрелы компа
 int b;//рандомное расставление своих кораблей
 int c; //рандомные выстрелы мои
-int main()
-{
+int main(){
     SetConsoleCP(1251);
     SetConsoleOutputCP(1251);
 
@@ -136,6 +120,8 @@ void FieldFill() {
 }
 
 void DrawField(char(*field)[10]) {
+    if (field == fieldMy)cout << "Поле игрока 1" << endl;
+    if (field == fieldComp)cout << "Поле игрока 2" << endl;
     cout << "    ";
     for (int i = 0; i < 10; i++) {
         cout << i << " ";
@@ -164,75 +150,61 @@ void ShipRankingOnFieldArm(char(*field)[10]) {
     //конец корабля
     int i2, j2;
     int j1, i1;
-    int k;
+    int k=0;
 
     // Четырёхпалубный
-    DrawField(fieldMy);
-    cout << "Введите начало 4х-палубного корабля\n";
-    cin >> i; cin >> j;
-    field[i][j] = '+';
-    system("cls");
-    DrawField(fieldMy);
-    cout << "Введите конец 4х-палубного корабля\n";
-    cin >> i2; cin >> j2;
-
-    /*while (((j2 - j != 3 || j - j2 != 3) && i != i2) || ((i2 - i != 3 || i - i2 != 3) && j != j2)) {
-        cout << "Вы неправильно ввели конечные координаты корабля, введите их заново\n";
-        cout << "Введите конец 4-х палубного корабля правильно\n";
-        cin >> i2; cin >> j2;
-
-        if (((j2 - j == 3 || j - j2 == 3) && i == i2) || ((i2 - i == 3 || i - i2 == 3) && j == j2)) {
-            system("cls");
-            field[i2][j2] = '+';
-            DrawField(fieldMy);
-        }
-    }*/
-    if (((j2 - j == 3 || j - j2 == 3) && i == i2) || ((i2 - i == 3 || i - i2 == 3) && j == j2)) {
-        field[i2][j2] = '+';
+    while (k < 1) {
         system("cls");
-    }
+        DrawField(fieldMy);
+        cout << "Введите начало 4х-палубного корабля\n";
+        cin >> j; cin >> i;
+        field[i][j] = '+';
+        system("cls");
+        DrawField(fieldMy);
+        cout << "Введите конец 4х-палубного корабля\n";
+        cin >> j2; cin >> i2;
+        system("cls");
+        if (((j2 - j == 3 || j - j2 == 3) && i == i2) || ((i2 - i == 3 || i - i2 == 3) && j == j2)) {
+            field[i2][j2] = '+';
+            system("cls");
+        }
+        system("cls");
+        DrawField(fieldMy);
+        if (i == i2) {
+            if (j < j2) {
+                field[i][j + 1] = '+';
+                field[i][j + 2] = '+';
+                system("cls");
+                DrawField(fieldMy);
+            }
+            else {
+                field[i][j - 1] = '+';
+                field[i][j - 2] = '+';
+                system("cls");
+                DrawField(fieldMy);
+            }
 
-    DrawField(fieldMy);
-    if (i == i2) {
-        if (j < j2) {
-            field[i][j + 1] = '+';
-            field[i][j + 2] = '+';
-            system("cls");
-            DrawField(fieldMy);
         }
-        else {
-            field[i][j - 1] = '+';
-            field[i][j - 2] = '+';
-            system("cls");
-            DrawField(fieldMy);
+        if (j == j2) {
+            if (i < i2) {
+                field[i + 1][j] = '+';
+                field[i + 2][j] = '+';
+                system("cls");
+                DrawField(fieldMy);
+            }
+            else {
+                field[i - 1][j] = '+';
+                field[i - 2][j] = '+';
+                system("cls");
+                DrawField(fieldMy);
+            }
         }
-
-    }
-    if (j == j2) {
-        if (i < i2) {
-            field[i + 1][j] = '+';
-            field[i + 2][j] = '+';
-            system("cls");
-            DrawField(fieldMy);
-        }
-        else {
-            field[i - 1][j] = '+';
-            field[i - 2][j] = '+';
-            system("cls");
-            DrawField(fieldMy);
-        }
+        k++;
     }
 
 
     // Трёхпалубные
     k = 0;
-    /*if (field[i - 1][j - 1] == 'o' && field[i + 1][j + 1] == 'o'
-        && field[i][j - 1] == 'o' && field[i][j + 1] == 'o'
-        && field[i + 1][j - 1] == 'o' && field[i - 1][j + 1] == 'o'
-        && field[i + 1][j] == 'o' && field[i - 1][j] == 'o'
-        && field[i1 - 1][j1] == 'o' && field[i1 + 1][j1 + 1] == 'o'
-        && field[i1][j1 + 1] == 'o' && field[i1 + 1][j1] == 'o'
-        && field[i1 - 1][j1] == 'o' && field[i + 1][j1 - 1] == 'o' && field[i - 1][j1 + 1] == '0') {*/
     while (k < 2) {
         cout << "Введите начало 3х-палубного корабля\n";
         cin >> i; cin >> j;
@@ -273,20 +245,10 @@ void ShipRankingOnFieldArm(char(*field)[10]) {
         }
 
     }
-    //}
 
 
     // Двупалобные
     k = 0;
-    /*if (field[i - 1][j - 1] == 'o' && field[i + 1][j + 1] == 'o'
-        && field[i][j - 1] == 'o'
-        && field[i + 1][j - 1] == 'o' && field[i - 1][j + 1] == 'o'
-        && field[i + 1][j] == 'o' && field[i - 1][j] == 'o'
-        && field[i1 - 1][j1] == 'o' && field[i1 + 1][j1 + 1] == 'o'
-        && field[i1][j1 + 1] == 'o' && field[i1 + 1][j1] == 'o'
-        && field[i1 - 1][j1] == 'o'
-        && field[i1 + 1][j1 - 1] == 'o' && field[i1 - 1][j1 + 1] == 'o'
-        && field[i][j] != '+') {*/
     while (k < 3) {
         cout << "Введите начало 2х-палубного корабля\n";
         cin >> i; cin >> j;
@@ -304,11 +266,6 @@ void ShipRankingOnFieldArm(char(*field)[10]) {
 
     // Однопалубные
     k = 0;
-    /*if (field[i - 1][j - 1] == 'o' && field[i + 1][j + 1] == 'o'
-        && field[i][j + 1] == 'o' && field[i][j - 1] == 'o'
-        && field[i + 1][j] == 'o' && field[i - 1][j] == 'o'
-        && field[i + 1][j - 1] == 'o' && field[i - 1][j + 1] == 'o'
-        && field[i][j] != '+') {*/
     while (k < 4) {
         cout << "Введите координаты 1-палубного корабля\n";
         cin >> i; cin >> j;
@@ -317,7 +274,6 @@ void ShipRankingOnFieldArm(char(*field)[10]) {
         system("cls");
         DrawField(fieldMy);
     }
-    //}
 }
 
 
@@ -472,53 +428,63 @@ void ShipRankingOnFieldRand(char(*field)[10]) {
 //3)стрельба
 //обычная атака компа
 void Attack(int x, int y, char(*field)[10]) {
-
     if (field[y][x] == 'o') {
-
-        cout << endl << "\tПусто\n";
-        field[y][x] = '*';
+        if (field == fieldMy) {
+            system("cls");
+            cout << endl << "\tПусто\n";
+            field[y][x] = '*';
+            DrawField(fieldMy);
+            DrawField(fieldComp);
+            StepPlayer1Rand();
+        }
+        else if (field == fieldComp) {
+            system("cls");
+            cout << endl << "\tПусто\n";
+            field[y][x] = '*';
+            DrawField(fieldMy);
+            DrawField(fieldComp);
+            StepPlayer2Rand();
+        }
     }
     else if (field[y][x] == '*' || field[x][y] == '-') {
         if (field == fieldMy) {
-
+            system("cls");
             cout << "\tПромах!\n";
-            cout << "Поле игрока 1\n";
             DrawField(fieldMy);
-            cout << "Поле игрока 2\n";
-            DrawField(fieldComp);
-            StepPlayer2Rand();
-        }
-        else if (field == fieldComp) {
-
-            cout << "\tПромах!\n";
-            cout << "Поле игрока 1\n";
-            DrawField(fieldMy);
-            cout << "Поле игрока 2\n";
             DrawField(fieldComp);
             StepPlayer1Rand();
+        }
+        else if (field == fieldComp) {
+            system("cls");
+            cout << "\tПромах!\n";
+            DrawField(fieldMy);
+            DrawField(fieldComp);
+            StepPlayer2Rand();
         }
     }
     else if (field[y][x] == '+') {
-
+        system("cls");
         cout << endl << "\tКорабль подбит\n";
         field[y][x] = '-';
         if (field == fieldMy) {
-            cout << "\tПромах!\n";
-            cout << "Поле игрока 1\n";
-            DrawField(fieldMy);
-            cout << "Поле игрока 2\n";
-            DrawField(fieldComp);
-            StepPlayer1Rand();
-
-        }
-        else if (field == fieldComp) {
-
-            cout << "\tПромах!\n";
+            my++;
+            system("cls");
+            cout << "\tКорабль подбит\n";
             cout << "Поле игрока 1\n";
             DrawField(fieldMy);
             cout << "Поле игрока 2\n";
             DrawField(fieldComp);
             StepPlayer2Rand();
+        }
+        else if (field == fieldComp) {
+            comp++;
+            system("cls");
+            cout << "\tКорабль подбит\n";
+            cout << "Поле игрока 1\n";
+            DrawField(fieldMy);
+            cout << "Поле игрока 2\n";
+            DrawField(fieldComp);
+            StepPlayer1Rand();
         }
     }
 }
@@ -530,9 +496,7 @@ void AttackSmart(int x, int y, char(*field)[10]) {
             system("cls");
             cout << endl << "\tПусто\n";
             field[y][x] = '*';
-            cout << "Поле игрока 1\n";
             DrawField(fieldMy);
-            cout << "Поле игрока 2\n";
             DrawField(fieldComp);
             StepPlayer1();
         }
@@ -540,9 +504,7 @@ void AttackSmart(int x, int y, char(*field)[10]) {
             system("cls");
             cout << endl << "\tПусто\n";
             field[y][x] = '*';
-            cout << "Поле игрока 1\n";
             DrawField(fieldMy);
-            cout << "Поле игрока 2\n";
             DrawField(fieldComp);
             StepPlayer2Rand();
         }
@@ -551,40 +513,37 @@ void AttackSmart(int x, int y, char(*field)[10]) {
         if (field == fieldMy) {
             system("cls");
             cout << "\tПромах!\n";
-            cout << "Поле игрока 1\n";
             DrawField(fieldMy);
-            cout << "Поле игрока 2\n";
             DrawField(fieldComp);
             StepPlayer2Rand();
         }
         else if (field == fieldComp) {
             system("cls");
             cout << "\tПромах!\n";
-            cout << "Поле игрока 1\n";
             DrawField(fieldMy);
-            cout << "Поле игрока 2\n";
             DrawField(fieldComp);
             StepPlayer1();
         }
     }
     else if (field[y][x] == '+') {
+        int x1, y1;
         if (field == fieldMy) {
+            my++;
+            x1 = x;
+            y1 = y;
             system("cls");
             cout << endl << "\tКорабль подбит\n";
             field[y][x] = '-';
-            cout << "Поле игрока 1\n";
             DrawField(fieldMy);
-            cout << "Поле игрока 2\n";
             DrawField(fieldComp);
             StepPlayer2Rand();
         }
         else if (field == fieldComp) {
+            comp++;
             system("cls");
             cout << endl << "\tКорабль подбит\n";
             field[y][x] = '-';
-            cout << "Поле игрока 1\n";
             DrawField(fieldMy);
-            cout << "Поле игрока 2\n";
             DrawField(fieldComp);
             StepPlayer1();
         }
@@ -650,18 +609,21 @@ void StepPlayer1Rand() {
 //6)остановка, приостановка, перезапуск игры(если ты лох)
 //надо реализовать
 
-//победа
-void Win(string name) {
-    cout << "Победа " << name << "!!" << endl;
-    ::flag = false;
-}
 //проверка победы
 void WinCheck(char(*field)[10], string name) {
     int c = 0;
     for (int i = 0; i < 10; i++) {
         for (int j = 0; j < 10; j++) {
-            if (field[i][j] == '+') c++;
+            if (field[j][i] == '+') c++;
         }
     }
-    if (c == 0) Win(name);
+    if (c == 10)
+        Win(name);
+    if (comp == 10)Win("Игрок 1");
+    else if (my == 10)Win("Игрок 2");
+}
+//победа
+void Win(string name) {
+    cout << "Победа " << name << "!!" << endl;
+    ::flag = false;
 }
